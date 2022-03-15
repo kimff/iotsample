@@ -89,6 +89,7 @@ async def get_stream_live_by_device(
             return True
 
     async def event_generator():
+        previous_data = ""
         while True:
             if await requests.is_disconnected():
                 print("Client disconnected!")
@@ -102,10 +103,11 @@ async def get_stream_live_by_device(
                     .first()
                 )
 
-                yield {
-                    "data": dict(data_stream.data),
-                }
-
+                if dict(data_stream.data) != previous_data:
+                    yield {
+                        "data": dict(data_stream.data),
+                    }
+                    previous_data = dict(data_stream.data)
             await asyncio.sleep(STREAM_DELAY)
 
     return EventSourceResponse(event_generator())
