@@ -105,7 +105,7 @@ async def get_stream_live_by_device(
 
                 if dict(data_stream.data) != previous_data:
                     yield {
-                        "data": [
+                        "data": {
                             dict(data_stream.data),
                             {
                                 "date": str(data_stream.created_at),
@@ -113,7 +113,7 @@ async def get_stream_live_by_device(
                                 "device_id": str(data_stream.device_id),
                                 "stream_id": str(data_stream.stream_id),
                             },
-                        ],
+                        }
                     }
                     previous_data = dict(data_stream.data)
             await asyncio.sleep(STREAM_DELAY)
