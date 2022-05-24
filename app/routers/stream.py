@@ -95,6 +95,7 @@ async def get_stream_live_by_device(
         while True:
             if await requests.is_disconnected():
                 print("Client disconnected!")
+                db.close()
                 break
 
             if new_messages():
