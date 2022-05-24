@@ -54,6 +54,7 @@ def get_streams(
         .filter(models.Data.developer_id == current_user.user_id)
         .all()
     )
+    db.close()
     return data_stream
 
 
@@ -68,6 +69,7 @@ def get_stream_by_device(
     current_user: str = Depends(oauth2.get_current_user),
 ):
     data_stream = db.query(models.Data).filter(models.Data.device_id == device_id).all()
+    db.close()
     return data_stream
 
 
