@@ -15,6 +15,10 @@ from ..database import engine, get_db
 from typing import Optional, List
 import uuid
 import asyncio
+import json
+import random
+from fastapi.responses import HTMLResponse
+from starlette.websockets import WebSocket
 
 STREAM_DELAY = 1  # second
 RETRY_TIMEOUT = 5000  # milisecond
@@ -66,7 +70,7 @@ def get_streams(
 def get_stream_by_device(
     device_id: str,
     db: Session = Depends(get_db),
-    current_user: str = Depends(oauth2.get_current_user),
+    # current_user: str = Depends(oauth2.get_current_user),
 ):
     data_stream = db.query(models.Data).filter(models.Data.device_id == device_id).all()
     db.close()
@@ -122,3 +126,44 @@ async def get_stream_live_by_device(
             await asyncio.sleep(STREAM_DELAY)
 
     return EventSourceResponse(event_generator())
+
+
+# @router.websocket("/ws/live/")
+# async def websocket_stream_by_device(
+#     websocket: WebSocket, device_id: str, db: Session = Depends(get_db)
+# ):
+#     def new_messages():
+#         check_count = (
+#             db.query(models.Data).filter(models.Data.device_id == device_id).count()
+#         )
+
+#         if check_count == 0:
+#             return None
+#         else:
+#             return True
+
+#     print("Accepting client connection...")
+#     await websocket.accept()
+#     while True:
+#         if new_messages():
+#             data_stream = (
+#                 db.query(models.Data)
+#                 .filter(models.Data.device_id == device_id)
+#                 .order_by(models.Data.id.desc())
+#                 .first()
+#             )
+
+#             if dict(data_stream.data) != previous_data:
+#                 yield {
+#                     "data": [
+#                         dict(data_stream.data),
+#                         {
+#                             "date": str(data_stream.created_at),
+#                             "developer_id": str(data_stream.developer_id),
+#                             "device_id": str(data_stream.device_id),
+#                             "stream_id": str(data_stream.stream_id),
+#                         },
+#                     ]
+#                 }
+#                 previous_data = dict(data_stream.data)
+#             await websocket.send_json(json.dump(data_stream))
