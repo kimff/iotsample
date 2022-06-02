@@ -1,0 +1,13 @@
+[Unit]
+Description=iot project sample aws ec2
+After=network.target
+
+[Service]
+User=kimff
+Group=kimff
+WorkingDirectory=/home/kimff/iot_project/src/
+Environment="PATH=/home/kimff/iot_project/venv/bin"
+ExecStart=/home/kimff/iot_project/venv/bin/gunicorn -w 3 -k uvicorn.workers.UvicornWorker app.main:app --bind 0.0.0.0:8000
+
+[Install]
+WantedBy=multi-user.target
