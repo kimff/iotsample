@@ -127,7 +127,8 @@ async def websocket_stream_by_device(
             )
 
             if dict(data_stream.data) != previous_data:
-                # websocket.send_json(json.dumps(dict(data_stream.data)))
-                # await websocket.send_text(str(dict(data_stream.data)))
                 print("new entry detected..")
+                await websocket.send_json(json.dumps(dict(data_stream.data)))
+                # await websocket.send_text(str(dict(data_stream.data)))
+                # await websocket.send_text(str(dict(data_stream.data)))
             previous_data = dict(data_stream.data)
