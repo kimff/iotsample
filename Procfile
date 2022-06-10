@@ -1,1 +1,1 @@
-web: uvicorn app.main:app --host=0.0.0.0 --port=${PORT:-5000} --workers=3 --timeout 200
+web: uvicorn app.main:app --host=0.0.0.0 --port=${PORT:-5000} --workers=3 --timeout-keep-alive 200 --limit-max-requests 5
